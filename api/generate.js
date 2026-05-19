@@ -52,7 +52,10 @@ Gib NUR ein JSON-Objekt zurück, ohne Einleitung, ohne Backticks:
       })
     });
 
-    if (!aiRes.ok) throw new Error(`Anthropic Fehler ${aiRes.status}`);
+    if (!aiRes.ok) {
+  const errBody = await aiRes.text();
+  throw new Error(`Anthropic ${aiRes.status}: ${errBody}`);
+}
     const aiData = await aiRes.json();
     const raw = aiData.content[0].text;
     const match = raw.match(/\{[\s\S]*\}/);
