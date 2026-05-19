@@ -63,18 +63,26 @@ Gib NUR ein JSON-Objekt zurück, ohne Einleitung, ohne Backticks:
     if (!match) throw new Error("Kein JSON gefunden");
     const report = JSON.parse(match[0]);
 
-    // 2. Kontakt in Brevo anlegen
+   // 2. Kontakt in Brevo anlegen
     await fetch("https://api.brevo.com/v3/contacts", {
       method: "POST",
       headers: { "Content-Type": "application/json", "api-key": process.env.BREVO_KEY },
       body: JSON.stringify({
         email: email.trim(),
-        attributes: { FIRSTNAME: vorname.trim(), LASTNAME: nachname.trim() },
+        attributes: { 
+          FIRSTNAME: vorname.trim(), 
+          LASTNAME: nachname.trim(),
+          PROFIL_NAME: report.profilName,
+          KERNMUSTER: report.kernmuster,
+          TIEFE: report.tiefe,
+          KOERPER: report.koerper,
+          MUSTER_FRAGE: report.musterFrage,
+          EINLADUNG: report.einladung
+        },
         listIds: [parseInt(process.env.BREVO_LISTE_ID)],
         updateEnabled: true
       })
     });
-
     // 3. Report per E-Mail senden
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
@@ -93,7 +101,6 @@ Gib NUR ein JSON-Objekt zurück, ohne Einleitung, ohne Backticks:
         }
       })
     });
-
     return res.status(200).json({ success: true });
 
   } catch (e) {
