@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigger-Selbsttest</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: white; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const ACCENT   = "#8C05BD";
+const ACCENT_L = "#F3E5FA";
+const MUTED    = "#777777";
+const BORDER   = "#d9d9d9";
+const TEXT     = "#1A1A1A";
+
+const Qs = [
+  { t: "Wenn dein Partner sich plötzlich zurückzieht, was spürst du zuerst?", o: ["Eine Enge oder ein Ziehen in der Brust", "Mein Kopf läuft los, ich analysiere sofort was ich falsch gemacht habe", "Äußerlich ruhig, aber innerlich zieht sich alles zusammen", "Ich werde unruhig und suche sofort Kontakt oder Klarheit"] },
+  { t: "Was denkst du als erstes wenn ein Gespräch eskaliert?", o: ["Ich mache irgendetwas falsch, immer ich", "Der andere versteht mich nicht und wird es nie", "Ich muss das sofort lösen, sonst bricht alles auseinander", "Ich will weg"] },
+  { t: "Wie oft merkst du mitten im Gespräch: ich bin gar nicht mehr bei mir?", o: ["Fast immer wenn es emotional wird", "Manchmal, besonders bei Konflikten", "Selten, ich merke es erst im Nachhinein", "Ich kenne das Gefühl, weiß aber nicht wann es anfängt"] },
+  { t: "Wie reagierst du bei Konflikten in der Partnerschaft?", o: ["Ich explodiere oder ziehe mich komplett zurück", "Ich diskutiere und verteidige mich heftig", "Ich versuche ruhig zu bleiben, schaffe es aber nicht immer", "Ich bleibe bei mir und spreche meine Bedürfnisse klar aus"] },
+  { t: "Wenn du kritisiert wirst, was passiert als erstes?", o: ["Ich rechtfertige mich sofort", "Ich ziehe mich still zurück und sage kaum noch etwas", "Ich stimme zu, auch wenn ich innerlich anderer Meinung bin", "Ich werde laut oder emotional"] },
+  { t: "Wie leicht fällt es dir, Nein zu sagen und deine Grenzen zu wahren?", o: ["Ich kann es kaum, ich habe Angst vor Ablehnung", "Ich sage manchmal Nein, fühle mich aber schuldig", "Ich übe es, mal gelingt es, mal nicht", "Ich setze klare Grenzen ohne schlechtes Gewissen"] },
+  { t: "Wie gehst du mit Eifersucht um?", o: ["Sie überfällt mich, ich verliere mich darin", "Ich habe oft eifersüchtige Gedanken, zeige sie aber nicht", "Ich spüre sie manchmal, kann sie aber gut einordnen", "Eifersucht spielt kaum eine Rolle für mich"] },
+  { t: "Nach einem Streit: wie lange brauchst du um wieder du selbst zu sein?", o: ["Stunden bis Tage, es hängt lange nach", "Ich komme schnell runter, aber etwas bleibt", "Ich schlafe schlecht danach, erst dann lässt es los", "Erst wenn das Thema wirklich geklärt ist"] },
+  { t: "Wie sehr richtest du dich nach der Meinung oder Anerkennung anderer aus?", o: ["Sehr, ich passe mein Verhalten stark daran an", "Ziemlich, ich merke dass es mich oft beeinflusst", "Manchmal, ich arbeite daran unabhängiger zu werden", "Kaum, ich bin mir meines Wertes bewusst"] },
+  { t: "Wie ehrlich bist du mit deinen eigenen Bedürfnissen in Beziehungen?", o: ["Ich sage was ich brauche, aber bereue es oft", "Ich verschweige vieles, um keinen Stress zu machen", "Ich weiß manchmal selbst nicht was ich brauche", "Ich sage es, werde aber nicht wirklich gehört"] },
+  { t: "Welche Beziehung hast du zu deinem inneren Kind?", o: ["Ich weiß gar nicht wie ich es erreichen oder verstehen soll", "Ich versuche Kontakt aufzubauen, aber es fällt mir schwer", "Ich nehme es manchmal bewusst wahr", "Ich bin regelmäßig liebevoll mit meinem inneren Kind im Austausch"] },
+  { t: "Was wünschst du dir am meisten für schwierige Momente in Beziehungen?", o: ["Endlich nicht mehr so schnell getriggert zu sein", "Ruhig und klar bleiben, statt zu explodieren oder zu erstarren", "Verstehen warum sich das Muster immer wiederholt", "Mich selbst nicht verlieren, auch wenn es intensiv wird"] }
+];
+
+const wrap  = { fontFamily: "Georgia, serif", maxWidth: 600, margin: "0 auto", padding: "1.5rem 1rem", color: TEXT };
+const lbl   = { fontFamily: "sans-serif", fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, display: "block", marginBottom: 8 };
+const h1s   = { fontSize: 26, fontWeight: 400, lineHeight: 1.35, marginBottom: 12, color: TEXT };
+const h2s   = { fontSize: 20, fontWeight: 400, lineHeight: 1.35, marginBottom: 12, color: TEXT };
+const ps    = { fontSize: 14, lineHeight: 1.75, color: MUTED, marginBottom: 10 };
+const divs  = { height: 1, background: BORDER, margin: "20px 0" };
+const inps  = { width: "100%", padding: "11px 14px", border: `1px solid ${BORDER}`, borderRadius: 4, fontSize: 14, fontFamily: "sans-serif", background: "white", color: TEXT, marginTop: 6, marginBottom: 10, outline: "none", display: "block" };
+const btn   = { background: ACCENT, color: "white", border: "none", padding: "13px 28px", fontFamily: "sans-serif", fontSize: 13, letterSpacing: "0.05em", borderRadius: 4, cursor: "pointer", width: "100%", marginTop: 10 };
+const btnOf = { background: ACCENT, color: "white", border: "none", padding: "13px 28px", fontFamily: "sans-serif", fontSize: 13, borderRadius: 4, width: "100%", marginTop: 10, opacity: 0.3, cursor: "default" };
+const prog  = { height: 3, background: BORDER, borderRadius: 2, marginBottom: 28 };
+const pf    = (p) => ({ height: 3, background: ACCENT, borderRadius: 2, width: `${p}%`, transition: "width 0.4s" });
+const qnum  = { fontFamily: "sans-serif", fontSize: 12, color: MUTED, display: "block", marginBottom: 16 };
+const qtext = { fontSize: 18, lineHeight: 1.5, marginBottom: 20, color: TEXT };
+const opt   = (sel) => ({ display: "block", width: "100%", textAlign: "left", padding: "13px 16px", marginBottom: 9, border: `1px solid ${sel ? ACCENT : BORDER}`, borderRadius: 6, background: sel ? ACCENT_L : "white", fontSize: 13, fontFamily: "sans-serif", color: sel ? ACCENT : TEXT, lineHeight: 1.5, cursor: "pointer" });
+
+function App() {
+  const [step, setStep]         = useState("intro");
+  const [vorname, setVorname]   = useState("");
+  const [nachname, setNachname] = useState("");
+  const [email, setEmail]       = useState("");
+  const [q, setQ]               = useState(0);
+  const [answers, setAnswers]   = useState([]);
+  const [sel, setSel]           = useState(null);
+  const [errDetail, setErrDetail] = useState("");
+
+  const startQuiz = () => { if (vorname.trim()) { setStep("quiz"); setQ(0); setAnswers([]); } };
+
+  const pick = (i) => {
+    if (sel !== null) return;
+    setSel(i);
+    setTimeout(() => {
+      const a = [...answers, { q: Qs[q].t, a: Qs[q].o[i] }];
+      setAnswers(a);
+      setSel(null);
+      if (q < Qs.length - 1) { setQ(q + 1); }
+      else { setStep("gate"); }
+    }, 350);
+  };
+
+  const canSubmit = nachname.trim() && email.includes("@");
+
+  const submit = async () => {
+    if (!canSubmit) return;
+    setStep("loading");
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ answers, vorname: vorname.trim(), nachname: nachname.trim(), email: email.trim() })
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || `Fehler ${res.status}`);
+      }
+      setStep("done");
+    } catch(e) {
+      setErrDetail(e.message || String(e));
+      setStep("error");
+    }
+  };
+
+  if (step === "intro") return (
+    <div style={wrap}>
+      <span style={lbl}>Trigger Shift Methode</span>
+      <h1 style={h1s}>Wie tief sitzen deine Trigger wirklich?</h1>
+      <p style={ps}>12 ehrliche Fragen. Am Ende bekommst du ein persönliches Triggerprofil direkt in dein Postfach, keinen allgemeinen Typ, sondern einen echten Spiegel.</p>
+      <p style={ps}>Keine richtigen oder falschen Antworten. Nur du und dein ehrlichstes Gefühl.</p>
+      <div style={divs} />
+      <span style={lbl}>Wie heißt du?</span>
+      <input style={inps} placeholder="Dein Vorname" value={vorname} maxLength={40}
+        onChange={e => setVorname(e.target.value)}
+        onKeyDown={e => e.key === "Enter" && vorname.trim() && startQuiz()} />
+      <button style={vorname.trim() ? btn : btnOf} onClick={startQuiz}>Test starten</button>
+    </div>
+  );
+
+  if (step === "quiz") {
+    const pct = Math.round((q / Qs.length) * 100);
+    return (
+      <div style={wrap}>
+        <div style={prog}><div style={pf(pct)} /></div>
+        <span style={qnum}>Frage {q + 1} von {Qs.length}</span>
+        <p style={qtext}>{Qs[q].t}</p>
+        {Qs[q].o.map((o, i) => (
+          <button key={i} style={opt(sel === i)} onClick={() => pick(i)}>{o}</button>
+        ))}
+      </div>
+    );
+  }
+
+  if (step === "gate") return (
+    <div style={wrap}>
+      <span style={lbl}>Fast fertig</span>
+      <h2 style={h2s}>Wohin soll ich dein Triggerprofil schicken, {vorname}?</h2>
+      <p style={ps}>Dein persönlicher Report kommt direkt in dein Postfach. Trag deinen Namen und deine E-Mail ein.</p>
+      <div style={divs} />
+      <span style={lbl}>Nachname</span>
+      <input style={inps} placeholder="Dein Nachname" value={nachname} maxLength={60}
+        onChange={e => setNachname(e.target.value)} />
+      <span style={lbl}>E-Mail-Adresse</span>
+      <input style={inps} placeholder="deine@email.de" value={email} type="email"
+        onChange={e => setEmail(e.target.value)}
+        onKeyDown={e => e.key === "Enter" && canSubmit && submit()} />
+      <p style={{ ...ps, fontSize: 12 }}>Deine Daten werden vertraulich behandelt und nicht weitergegeben.</p>
+      <button style={canSubmit ? btn : btnOf} onClick={submit}>Mein Triggerprofil erhalten</button>
+    </div>
+  );
+
+  if (step === "loading") return (
+    <div style={{ ...wrap, textAlign: "center", padding: "3rem 1rem" }}>
+      <div style={{ width: 30, height: 30, border: `2px solid ${BORDER}`, borderTopColor: ACCENT, borderRadius: "50%", margin: "0 auto 16px", animation: "spin 0.85s linear infinite" }} />
+      <span style={lbl}>Dein Triggerprofil wird erstellt</span>
+      <p style={ps}>Einen Moment, {vorname} …</p>
+    </div>
+  );
+
+  if (step === "done") return (
+    <div style={wrap}>
+      <div style={{ background: ACCENT_L, border: `1px solid ${ACCENT}`, borderRadius: 8, padding: "2rem 1.5rem", textAlign: "center" }}>
+        <span style={{ ...lbl, textAlign: "center", display: "block", marginBottom: 12 }}>Dein Profil ist unterwegs</span>
+        <h2 style={{ ...h2s, marginBottom: 12 }}>Schau in dein Postfach, {vorname}.</h2>
+        <p style={{ ...ps, marginBottom: 0 }}>Dein persönliches Triggerprofil ist auf dem Weg zu dir. Manchmal landet es im Spam-Ordner, also wirf auch dort einen kurzen Blick.</p>
+      </div>
+      <p style={{ ...ps, textAlign: "center", marginTop: 20, fontSize: 12 }}>Bleib bei dir. Caro</p>
+    </div>
+  );
+
+  if (step === "error") return (
+    <div style={wrap}>
+      <div style={{ background: "#FEF2F2", border: "1px solid #FECACA", borderRadius: 8, padding: "1.5rem" }}>
+        <p style={{ ...ps, color: "#991B1B", marginBottom: 8 }}>Etwas ist schiefgelaufen.</p>
+        <details style={{ fontFamily: "monospace", fontSize: 11, color: "#7F1D1D" }}>
+          <summary style={{ cursor: "pointer" }}>Technische Details</summary>
+          <pre style={{ whiteSpace: "pre-wrap", marginTop: 8 }}>{errDetail}</pre>
+        </details>
+        <button style={{ ...btn, marginTop: 16 }} onClick={() => setStep("gate")}>Nochmal versuchen</button>
+      </div>
+    </div>
+  );
+
+  return null;
+}
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(<App />);
+</script>
+</body>
+</html>
