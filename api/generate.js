@@ -70,7 +70,7 @@ Gib NUR ein JSON-Objekt zurück, ohne Einleitung, ohne Backticks:
       body: JSON.stringify({
         email: email.trim(),
         attributes: { 
-          FIRSTNAME: vorname.trim(), 
+          FIRSTNAME: vorname.trim(), VORNAME: vorname.trim(),
           LASTNAME: nachname.trim(),
           PROFIL_NAME: report.profilName,
           KERNMUSTER: report.kernmuster,
