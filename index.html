@@ -78,7 +78,7 @@ function App() {
     }, 350);
   };
 
-  const canSubmit = nachname.trim() && email.includes("@");
+  const canSubmit = vorname.trim() && nachname.trim() && email.includes("@");
 
   const submit = async () => {
     if (!canSubmit) return;
@@ -135,7 +135,9 @@ function App() {
       <h2 style={h2s}>Wohin soll ich dein Triggerprofil schicken, {vorname}?</h2>
       <p style={ps}>Dein persönlicher Report kommt direkt in dein Postfach. Trag deinen Namen und deine E-Mail ein.</p>
       <div style={divs} />
-      <span style={lbl}>Nachname</span>
+     <span style={lbl}>Vorname</span>
+<input style={inps} placeholder="Dein Vorname" value={vorname} maxLength={40} onChange={e => setVorname(e.target.value)} />
+     <span style={lbl}>Nachname</span>
       <input style={inps} placeholder="Dein Nachname" value={nachname} maxLength={60}
         onChange={e => setNachname(e.target.value)} />
       <span style={lbl}>E-Mail-Adresse</span>
