@@ -126,7 +126,7 @@ function buildEmailHtml(vorname, nachname, r) {
     <tr><td style="padding:24px 28px;background:#FAFAFA">
       <p style="font-family:sans-serif;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8C05BD;margin:0 0 10px">Eine persönliche Einladung von Caro</p>
       <p style="font-size:14px;line-height:1.75;color:#555;font-style:italic;margin:0 0 20px">${r.einladung}</p>
-      <a href="https://carobrandtcoaching.de" style="display:block;background:#8C05BD;color:white;text-decoration:none;text-align:center;padding:13px 28px;font-family:sans-serif;font-size:13px;border-radius:4px">Kostenloses Klarheitsgespräch buchen</a>
+      <a href="https://calendly.com/carobrandtcoaching/klarheitsgespraech" style="display:block;background:#8C05BD;color:white;text-decoration:none;text-align:center;padding:13px 28px;font-family:sans-serif;font-size:13px;border-radius:4px">Kostenloses Klarheitsgespräch buchen</a>
     </td></tr>
   </table>
   <p style="text-align:center;font-family:sans-serif;font-size:11px;color:#999;margin-top:24px">Bleib bei dir. Caro</p>
