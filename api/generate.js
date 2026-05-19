@@ -37,6 +37,7 @@ WICHTIG:
 - Keine Begriffe wie toxisch oder Narzisst
 - Kurze Absätze, warm aber klar
 - Kein Psycho-Jargon
+- KEINE Bindestriche oder Gedankenstriche im Text, weder - noch —, immer Komma oder neuen Satz verwenden
 - Name der Person: ${vorname} ${nachname}
 - KEINE Lösungen, KEINE Tipps, KEINE Anleitungen
 - Zeige die Tiefe des Musters, nicht den Weg raus
