@@ -76,15 +76,21 @@ Gib NUR ein JSON-Objekt zurück, ohne Einleitung, ohne Backticks:
     });
 
     // 3. Report per E-Mail senden
-    const emailHtml = buildEmailHtml(vorname, nachname, report);
     await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
       headers: { "Content-Type": "application/json", "api-key": process.env.BREVO_KEY },
       body: JSON.stringify({
-        sender: { name: "Caro Brandt", email: process.env.ABSENDER_EMAIL },
+        templateId: 417,
         to: [{ email: email.trim(), name: `${vorname} ${nachname}` }],
-        subject: `${vorname}, dein persönliches Triggerprofil ist da`,
-        htmlContent: emailHtml
+        params: {
+          VORNAME: vorname,
+          PROFIL_NAME: report.profilName,
+          KERNMUSTER: report.kernmuster,
+          TIEFE: report.tiefe,
+          KOERPER: report.koerper,
+          MUSTER_FRAGE: report.musterFrage,
+          EINLADUNG: report.einladung
+        }
       })
     });
 
