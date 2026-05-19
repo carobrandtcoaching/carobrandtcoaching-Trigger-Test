@@ -1,12 +1,10 @@
 {
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/$1" }
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" },
+    { "src": "api/generate.js", "use": "@vercel/node" }
   ],
-  "functions": {
-    "api/generate.js": {
-      "memory": 128,
-      "maxDuration": 30
-    }
-  }
+  "routes": [
+    { "src": "/api/generate", "dest": "/api/generate.js" },
+    { "src": "/", "dest": "/index.html" }
+  ]
 }
