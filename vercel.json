@@ -1,4 +1,8 @@
 {
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/api/$1" },
+    { "src": "/(.*)", "dest": "/$1" }
+  ],
   "functions": {
     "api/generate.js": {
       "memory": 128,
